@@ -1,0 +1,106 @@
+body {
+  font-family: arial;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+*, *:before, *:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.backgroundBlueGrad {
+  background: #0c113d;
+  /* Old browsers */
+  background: -moz-radial-gradient(center, ellipse cover, #0c113d 0%, black 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #0c113d), color-stop(100%, black));
+  /* Chrome,Safari4+ */
+  background: -webkit-radial-gradient(center, ellipse cover, #0c113d 0%, black 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-radial-gradient(center, ellipse cover, #0c113d 0%, black 100%);
+  /* Opera 12+ */
+  background: -ms-radial-gradient(center, ellipse cover, #0c113d 0%, black 100%);
+  /* IE10+ */
+  background: radial-gradient(ellipse at center, #0c113d 0%, black 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0c113d', endColorstr='#000000',GradientType=1 );
+  /* IE6-9 fallback on horizontal gradient */
+}
+
+.canvasBox {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  text-align: center;
+  overflow: hidden;
+}
+
+canvas {
+  position: relative;
+  display: inline-block;
+  z-index: 10;
+  border: 1px solid #000;
+}
+
+.startButton {
+  display: block;
+  position: fixed;
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  background: #f00;
+  z-index: 20;
+  top: 30%;
+  left: 50%;
+  margin-left: -100px;
+  color: #fff;
+  line-height: 200px;
+  font-size: 80px;
+  text-align: center;
+  cursor: pointer;
+  font-family: arial;
+}
+.startButton:hover {
+  background: #f55;
+}
+.startButton.on {
+  top: 30%;
+  transition: all 1s ease-out;
+}
+.startButton.off {
+  top: -50%;
+  transition: all 1s ease-out;
+}
+
+.playerControls {
+  display: block;
+  position: fixed;
+  font-size: 20px;
+  line-height: 25px;
+  z-index: 20;
+  color: #fff;
+  width: 300px;
+  height: auto;
+  margin-top: 20px;
+  left: 50%;
+  margin-left: -150px;
+}
+.playerControls.on {
+  top: 60%;
+  transition: all 1s ease-out;
+}
+.playerControls.off {
+  top: -50%;
+  transition: all 1s ease-out;
+}

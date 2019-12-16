@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<!--
+  Created using jsbin.com
+  Source can be edited via http://jsbin.com/otakij/8/edit
+-->
+<!--
+  Created using jsbin.com
+  Source can be edited via http://jsbin.com/uhiran/6/edit
+-->
+  <head>
+  <title>CreativeJS graphics playground</title>
+  <style>
+    canvas { border : 1px lightgray solid; }
+    body { margin :0; }
+  </style>
+  
+  <link rel="stylesheet" type="text/css" href="styles.css">
+
+
+<style id="jsbin-css">
+body {
+	font-family: arial;
+}
+
+a {text-decoration:none;}
+
+#uiOverlay {
+	position:absolute;
+	margin:0 auto;
+	width:800px;
+	height:100px;
+	bottom:0;
+}
+
+canvas {
+	position:absolute;
+	margin:0 auto;
+	z-index:10;
+
+}
+
+.buttonBox {
+	position:absolute;
+	width:70%;
+	height:auto;
+	padding:20px 0;
+	bottom:0;
+	left:0;
+	background-color:rgba(255,255,255,0.5);
+	text-align:center;
+	z-index: 20;
+	font-size:1.2em;
+	border-radius:81px;
+	border:6px solid #22d;
+	background-color:#66f;
+	
+	
+	box-shadow: inset 0 2px 3px rgba(0,0,0,0.7),0 7px 15px rgba(0,0,0,0.7),inset 0 -1px 1px rgba(0,0,0,0.7);
+	transition:all 1s ease;
+}
+
+.open {left:10%;opacity:1;}
+
+.closed {left:-60%;opacity:0;}
+
+
+
+.buttonBox li {
+	display:inline-block;
+	width:131px;
+	height:54px;
+	line-height:54px;
+	background-color:#66f;
+	border-radius:35px;
+	border:2px solid #22d;
+	box-shadow:inset 0 2px 0px rgba(0,0,0,0.9),0 -1px 1px rgba(255,255,255,0.8),0 1px 0px rgba(0,0,0,0.9);
+}
+
+.buttonBox li:hover, li.on {
+	width:131px;
+	height:54px;
+	line-height:54px;
+	background-color:#88f;
+	border:2px solid #fff;
+	
+}
+
+.buttonBox li a {
+	width:100%;
+	height:100%;
+	display:block;
+	border-radius: 35px;
+	color:#aaf;
+}
+
+.buttonBox li a:hover, li.on {
+	color:#fff;
+}
+
+.showHide {
+	display:block;
+	position:absolute;
+	right:40px;
+	bottom:40px;
+	width:18%;
+	height:70px;
+	line-height:70px;
+	font-size:1.7em;
+	border-radius:41px;
+	border:6px solid #22d;
+	background-color:#66f;
+	z-index:30;
+	text-align:center;
+	box-shadow: inset 0 2px 3px rgba(0,0,0,0.7),0 7px 15px rgba(0,0,0,0.7);
+}
+
+.showHide:hover {
+	background-color:#fff;
+}
+</style>
+</head>
+  <body>
+    <div id="uiOverlay">
+      <ul class="buttonBox open">
+        <li><a class="actionBtn">Start</a></li>
+      </ul>
+      <a class="showHide">Hide</a>
+    </div>
+    <div class="canvasBox">
+    <canvas id="creativejs" width='800' height='600'></canvas>
+  </div>
+<script src="jquery.js"></script>
+<script src="creative.js"></script>
+  <script src="js.js"></script>  
+<script>
+// housekeeping
+var canvas = document.getElementById('creativejs'),
+    c = canvas.getContext('2d');
+
+// particle array setup
+
+var particles = [];
+
+//counter init
+var counter = 0;
+var curScore = 0;
+// play switch setup
+
+var playing = false;
+
+  
+
+/* **************** Draw Function ********************* */
+
+function draw() {
+// Housekeeping
+
+// frame rate
+  frameRate = 60;
+// Each frame reset color overlay mode
+  c.globalCompositeOperation = 'source-over';
+// clearRect  
+  c.fillStyle = rgba(0,0,0,1);
+  c.fillRect(0,0,canvas.width,canvas.height);
+
+// set turbulence
+  var turbulance = random(-3,3);
+
+// Each frame link play function to particle emmision (particlesPerFrame)
+// playing3
+  particle3EmmisionFunct();
+
+//particle limiter
+ // particleLimiter();
+
+  
+// particle 3 updater
+  particle3Updater();
+
+
+var currentPx = 0;
+var currentPy = 0;
+var currentMx = mouseX;
+var currentTop = 100;   
+
+/* ************************ info output For loop *************************** */
+
+
+  c.globalCompositeOperation = 'source-over';
+  c.font = "30px arial"; 
+  c.fillStyle = "rgba(255,255,255,1)";
+  c.fillText(particles.length + ' ' + parseInt(counter/30,10),100,100);
+
+
+
+// write current positions to canvas per particle
+/*  c.font = 'italic 24pt arial';
+  c.fillStyle = '#ccc';
+  c.fillText(particle.length+' '+counter+' '+currentMx + ' ' + currentId + ' ' + fPassSw, 100,currentTop);
+
+  c.fillText('Hit ' + curScore, 800,100);
+// shift next particle info output down
+  currentTop+=30; 
+*/
+// if mouse moves over particle make particle shrink
+ // close info output for loop
+
+  console.log(particles.length + ' ' + parseInt(counter/30,10));
+  counter++;
+ 
+/* **************** Close Draw Function ******************** */
+}
+/* **************** Close Draw Function ******************** */
+
+
+function particle3EmmisionFunct() {
+  if(playing) {
+    
+      if ((counter%25 === 0)&&(particles.length <=10)){
+        
+        c.globalCompositeOperation = 'source-over';
+          makeParticle(1);
+      }
+    }
+
+  if(!playing) { 
+    particles.length = 0;
+  }
+} // close $particle3EmmisionFunct
+
+
+
+function makeParticle(numParticles) {
+  
+  for(var i=0; i<numParticles; i++){
+    var p = {
+    x : random(50,750),
+    y : random(50,550),
+    xVel : random(5,-5),
+    yVel : random(5,-5),
+    hue : random(360),
+    size : random(30,100),
+    fPassSw : false,
+    pKill : false
+    }; // close var p
+      // create particles (p options)
+      
+      particles.push(p);
+  } // close for loop
+
+} // close function makeParticle3
+
+
+function particleLimiter() {
+// Limit the number of Particles
+
+  if (particles.length >= 10) {
+  makeParticle(0);
+
+  } // close while
+} // end particle limiter
+
+
+function particle3Updater() {
+// Particle 3 For Loop
+  for(var i=particles.length-1; i>=0; i--) {
+  var p = particles[i];
+  c.globalCompositeOperation = "lighter";
+// create gradient for particle color
+  var grd3 = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+      grd3.addColorStop(0, 'rgba(25,255,255,0)');
+      grd3.addColorStop(0.3, 'rgba(25,255,255,0)');
+      grd3.addColorStop(0.8, 'rgba(25,255,255,1)');
+      grd3.addColorStop(1, 'rgba(25,255,255,0)');
+// create particle with gradient
+      c.fillStyle = grd3;
+      c.fillCircle(p.x,p.y,p.size);
+//check if particle has passed right border for first time. If so change fPassSw to true
+
+//when particle hits left border reverse velocity
+    if (p.x <=p.size ){
+      p.x = p.size;
+      p.xVel*=-1;
+    } // close if  
+    
+    if (p.y <= p.size ){
+      p.y = p.size;
+      p.yVel*=-1;
+    } // close if 
+    
+    if (p.x >=canvas.width-p.size ){
+      p.x = canvas.width-p.size;
+      p.xVel*=-1;
+    } // close if  
+    
+    if (p.y >=canvas.height-p.size ){
+      p.y = canvas.height-p.size;
+      p.yVel*=-1;
+    } // close if 
+
+// update particle position for next frame 
+  p.x += p.xVel;
+  p.y += p.yVel;
+  p.size*=0.955; 
+   
+  } // close Particle 3 For Loop
+} // close particle 3 updater
+
+
+
+
+/************************ Button Functions *********************************/
+
+$('.showHide').click(function(){
+
+  if ($('.buttonBox').hasClass('open'))
+  {
+    $('.showHide').html('Show');
+    $('.buttonBox').removeClass('open').addClass('closed');
+  } else {
+    $('.showHide').html('Hide');
+    $('.buttonBox').removeClass('closed').addClass('open');
+  }
+  preventDefault();
+  return false ;
+});
+
+
+$('.actionBtn').click(function(){
+  playing = !playing;
+  if ($(this).parent().hasClass('off')) 
+    {
+      $(this).parent().removeClass('on off').addClass('on');
+    } else if ($(this).parent().hasClass('on')) 
+      {
+    $(this).parent().removeClass('on off').addClass('off');
+    }
+    preventDefault();
+  return false ;
+});
+</script>
+</body>
+</html>
+  

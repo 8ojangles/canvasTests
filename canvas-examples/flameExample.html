@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+<!--
+  Created using jsbin.com
+  Source can be edited via http://jsbin.com/opeqey/3/edit
+-->
+<!--
+  Created using jsbin.com
+  Source can be edited via http://jsbin.com/uhiran/6/edit
+-->
+  <head>
+  <title>CreativeJS graphics playground</title>
+  <style>
+    canvas { border : 1px lightgray solid; }
+    body { margin :0; }
+  </style>
+  
+ 
+
+
+<style id="jsbin-css">
+body {
+	font-family: arial;
+}
+
+a {text-decoration:none;}
+
+#uiOverlay {
+	position:absolute;
+	margin:0 auto;
+	width:1200px;
+	height:100px;
+	bottom:0;
+}
+
+canvas {
+	position:absolute;
+	margin:0 auto;
+	z-index:10;
+
+}
+
+.buttonBox {
+	position:absolute;
+	width:70%;
+	height:auto;
+	padding:20px 0;
+	bottom:0;
+	left:0;
+	background-color:rgba(255,255,255,0.5);
+	text-align:center;
+	z-index: 20;
+	font-size:1.2em;
+	border-radius:81px;
+	border:6px solid #22d;
+	background-color:#66f;
+	
+	
+	box-shadow: inset 0 2px 3px rgba(0,0,0,0.7),0 7px 15px rgba(0,0,0,0.7),inset 0 -1px 1px rgba(0,0,0,0.7);
+	transition:all 1s ease;
+}
+
+.open {left:10%;opacity:1;}
+
+.closed {left:-60%;opacity:0;}
+
+
+
+.buttonBox li {
+	display:inline-block;
+	width:131px;
+	height:54px;
+	line-height:54px;
+	background-color:#66f;
+	border-radius:35px;
+	border:2px solid #22d;
+	box-shadow:inset 0 2px 0px rgba(0,0,0,0.9),0 -1px 1px rgba(255,255,255,0.8),0 1px 0px rgba(0,0,0,0.9);
+}
+
+.buttonBox li:hover, li.on {
+	width:131px;
+	height:54px;
+	line-height:54px;
+	background-color:#88f;
+	border:2px solid #fff;
+	
+}
+
+.buttonBox li a {
+	width:100%;
+	height:100%;
+	display:block;
+	border-radius: 35px;
+	color:#aaf;
+}
+
+.buttonBox li a:hover, li.on {
+	color:#fff;
+}
+
+.showHide {
+	display:block;
+	position:absolute;
+	right:40px;
+	bottom:40px;
+	width:18%;
+	height:70px;
+	line-height:70px;
+	font-size:1.7em;
+	border-radius:41px;
+	border:6px solid #22d;
+	background-color:#66f;
+	z-index:30;
+	text-align:center;
+	box-shadow: inset 0 2px 3px rgba(0,0,0,0.7),0 7px 15px rgba(0,0,0,0.7);
+}
+
+.showHide:hover {
+	background-color:#fff;
+}
+</style>
+</head>
+  <body>
+    <div id="uiOverlay">
+      <ul class="buttonBox open">
+        <li><a class="playStopBtn">Flame</a></li>
+        <li><a class="action1Btn">Smoke</a></li>
+        <li><a class="action2Btn">Wind</a></li>
+        <li><a class="action3Btn">Action3</a></li>
+        <li><a class="action4Btn">Action4</a></li>
+      </ul>
+      <a href="#" class="showHide">Hide Buttons</a>
+    </div>
+    <div class="">
+    <canvas id="creativejs" width='1200' height='600'></canvas>
+  </div>
+<script src="jquery.js"></script>
+<script src="creative.js"></script> 
+<script>
+// housekeeping
+var canvas = document.getElementById('creativejs'),
+    c = canvas.getContext('2d');
+
+// particle array setup
+var particles = [];
+var particles2 = [];
+var particles3 = [];
+
+//counter init
+var counter = 0;
+// play switch setup
+var playing = false;
+var playing2 = false;
+var playing3 = false;
+
+
+
+$('.showHide').click(function(){
+
+  if ($('.buttonBox').hasClass('open'))
+  {
+    $('.showHide').html('Show Buttons');
+    $('.buttonBox').removeClass('open').addClass('closed');
+  } else {
+    $('.showHide').html('Hide Buttons');
+    $('.buttonBox').removeClass('closed').addClass('open');
+  }
+
+});
+
+
+
+$('.playStopBtn').click(function () {
+  playing = !playing;
+  if (playing) {
+    $(this).parent().removeClass('on off').addClass('on');
+  } else if (!playing){
+    $(this).parent().removeClass('on off').addClass('off');
+  }
+  preventDefault();
+  return false;
+});
+
+$('.action1Btn').click(function () {
+  playing2 = !playing2;
+  if (playing2) {
+    $(this).parent().removeClass('on off').addClass('on');
+  } else if (!playing2){
+    $(this).parent().removeClass('on off').addClass('off');
+  }
+  preventDefault();
+  return false;
+});
+
+$('.action2Btn').parent().addClass('off');
+
+var windStrength = 0;
+var windAcceleration = 1;
+
+$('.action2Btn').click(function(){
+  if ($(this).parent().hasClass('off')) 
+    {
+      $(this).parent().removeClass('on off').addClass('on');
+    } else if ($(this).parent().hasClass('on')) 
+      {
+    $(this).parent().removeClass('on off').addClass('off');
+    }
+
+
+});
+
+$('.action3Btn').click(function(){
+  playing3 = !playing3;
+  if ($(this).parent().hasClass('off')) 
+    {
+      $(this).parent().removeClass('on off').addClass('on');
+    } else if ($(this).parent().hasClass('on')) 
+      {
+    $(this).parent().removeClass('on off').addClass('off');
+    }
+
+
+});
+
+// Listen to mouse click
+canvas.addEventListener('mousedown',mousePressed);
+// switch on/clickagain to switch off
+// function mousePressed(e) { 
+//   playing = !playing;
+// }
+
+function draw() {
+// Each frame reset color overlay mode
+  c.globalCompositeOperation = 'source-over';
+// clearRect  
+
+  c.fillStyle = rgba(0,0,0,1);
+  c.fillRect(0,0,canvas.width,canvas.height);
+
+// frame rate
+  frameRate = 30;
+// set color overlay mode
+  var turbulance = random(-3,3);
+// counter output
+
+
+// Each frame link play function to particle emmision (particlesPerFrame)
+
+if(playing3) {
+    if (counter%25 === 0){
+  c.globalCompositeOperation = 'source-over';
+  makeParticleSmoke(1);
+  }
+  }
+
+ 
+
+if(playing2) { 
+    if (counter%2 === 0){
+      c.globalCompositeOperation = 'source-atop';
+    makeParticle2(1); 
+    }
+  }
+  if(playing) { 
+  makeGlow();
+  c.globalCompositeOperation = 'lighter';
+  makeParticle(1);
+  }
+  if(!playing2) {
+  particles2.length = 0;  
+  
+  }
+  
+  if(!playing3) { 
+  particles3.length = 0;
+  }
+
+
+
+  if ($('.action2Btn').parent().hasClass('on'))
+    {
+      if (windStrength < 20)
+        {
+          if (counter%1 === 0)
+            {
+              windStrength+=windAcceleration;
+            }
+          if (counter%1 === 0)
+                {
+                  windAcceleration++;
+                }
+        }
+    } 
+  else if ($('.action2Btn').parent().hasClass('off'))
+    {
+      windAcceleration = 1;
+      if (windStrength >= 1)
+        {
+
+          windStrength-=windAcceleration;
+          if (counter%5 === 0)
+            {
+
+              if (windAcceleration > 1) 
+                {
+                  windAcceleration++;
+                }
+            }
+        }
+    }
+
+  while (particles.length > 7) {
+  particles.shift();
+  } // close while
+
+  while (particles2.length > 20) {
+  particles2.shift();
+  } // close while
+
+  while (particles3.length > 20) {
+  particles3.shift();
+  } // close while
+  
+  for(var i=0; i<particles2.length; i++) {
+  var p2 = particles2[i];
+  c.globalCompositeOperation = "source-over";
+  c.fillStyle = rgba(0,0,0,p2.smokeOpacity); 
+  c.fillCircle(p2.x,p2.y,p2.size);
+  p2.x += p2.xVel-windStrength;
+  p2.y += p2.yVel;
+  p2.size*=1.07;
+  /*p.yVel+=0.9;*/
+  } // close for
+
+  for(i=0; i<particles.length; i++) {
+  var p = particles[i];
+  c.globalCompositeOperation = "lighter";
+  c.fillStyle = rgb(255,40,40); 
+  c.fillCircle(p.x,p.y,p.size);
+   c.fillStyle = rgb(255,190,0);
+  c.fillCircle(p.x,p.y,p.size*0.9);
+  c.fillStyle = rgb(255,255,255);
+  c.fillCircle(p.x,p.y,p.size*0.5); 
+  p.x += p.xVel-windStrength/*+turbulance*/;
+  p.y += p.yVel;
+  p.size*=0.87;
+ /*
+
+  var drag = 0.95; 
+  p.xVel *= drag;
+  p.yVel *= drag;
+  
+    if (p.x <=0 ){
+      p.x = p.size;
+      p.xVel*=-1;
+    } // close if
+    
+     if (p.x >=400 ){
+      p.x = 400-p.size;
+      p.xVel*=-1;
+    } // close if
+    
+     if (p.y >=400 ){
+      p.y = 400-p.size;
+      p.yVel*=-1;
+    }  // close if */
+  
+  } // close for
+
+  for(i=0; i<particles3.length; i++) {
+  var p3 = particles3[i];
+  c.fillStyle = rgba(25,255,255,0.5);
+  c.fillCircle(p3.x,p3.y,p3.size); 
+  p3.x += p3.xVel-windStrength;
+  p3.y += p3.yVel;
+  p3.size*=1;
+ var positionCheckX = particles3[i].x;
+ var positionCheckY = particles3[i].y;
+    console.log(+positionCheckX+' '+positionCheckY +' '+particles3.indexOf());
+  /*p.yVel+=0.9;*/
+  } // close for
+  
+
+  //c.fillText(counter +' '+ counter%20, 20,20);
+  //  c.font = "arial 50px";
+  //c.fillText(windStrength, 100,100);
+  counter++;
+  
+} // close draw function
+
+function makeParticle(numParticles) {
+  
+  for(var i=0; i<numParticles; i++){
+    var p = {
+    x : 400,
+    y : 350,
+    xVel : random(-0.1,0.1),
+    yVel : random(-5,-15),
+    hue : random(360),
+    size : random(40,42)
+    }; // close var P
+      // create particles (p options)
+      particles.push(p);
+  } // close for loop
+
+} // close function makeParticle
+
+function makeParticle2(numParticles) {
+  
+  for(var i=0; i<numParticles; i++){
+    var p2 = {
+    x : 400,
+    y : 350,
+    xVel : random(-0.1,0.1),
+    yVel : random(-10,-15),
+    hue : random(360),
+    size : random(10,20),
+    smokeOpacity : 0.05
+    }; // close var P2
+      // create particles (p2 options)
+      particles2.push(p2);
+  } // close for loop
+
+} // close function makeParticle2
+
+function makeParticleSmoke(numParticles) {
+  
+  for(var i=0; i<numParticles; i++){
+    var p3 = {
+    x : 1300,
+    y : random(50,550),
+    xVel : random(-3,-7),
+    yVel : 0,
+    hue : random(360),
+    size : random(30,50)
+    }; // close var P3
+      // create particles (p3 options)
+      
+      particles3.push(p3);
+  } // close for loop
+
+} // close function makeParticle3
+
+function makeGlow(){
+  c.fillStyle = rgba(255,0,0,1);
+  c.fillRect(0,0,canvas.width,canvas.height);
+  
+  var gradCenterX = 400;
+  var gradCenterY = 350;
+  var shimr = random(-15,15);
+  var grd = c.createRadialGradient(gradCenterX+shimr, gradCenterY+shimr, 10, gradCenterX+shimr, gradCenterY+shimr, 500);
+      grd.addColorStop(0, 'rgba(0,0,0,0)');
+      grd.addColorStop(1, 'rgba(0,0,0,0.7)');
+
+  // var myImage = new Image();
+  //           myImage.src = "images/blueStones_background05.jpg";
+  //           c.drawImage(myImage, 0, 0, canvas.width, canvas.height);
+
+  c.fillStyle = grd;
+  c.fillRect(0, 0, canvas.width, canvas.height); 
+  
+
+}
+
+function makeGlow2(){
+  
+  var grad2CenterX = 400;
+  var grad2CenterY = 400;
+  var shimr = random(-15,15);
+  var grd2 = c.createRadialGradient(grad2CenterX+shimr, grad2CenterY+shimr, 10, grad2CenterX+shimr, grad2CenterY+shimr, 500);
+      grd2.addColorStop(0, 'rgba(0,0,0,0)');
+      grd2.addColorStop(1, 'rgba(0,0,0,0.7)');
+
+  c.fillStyle = grd2;
+  c.fillRect(0, 0, canvas.width, canvas.height); 
+}
+</script>
+</body>
+</html>
+  

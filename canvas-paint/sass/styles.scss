@@ -1,0 +1,148 @@
+body {
+	font-family: arial;
+}
+
+html, body { width:100%; height:100%; }
+
+a {text-decoration:none;}
+
+*, *:before, *:after {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.canvasBox {
+	position: relative;
+	width: 1000px;
+	height: 810px;
+	z-index: 10;
+	text-align: center;
+	overflow: hidden;
+}
+
+canvas {
+	position:relative;
+	display: inline-block;
+	width:1000px;
+	height:800px;
+	z-index:10;
+	border: 1px solid #000;
+}
+
+.toolbarBox {
+	position: relative;
+	width: 100%;
+	height: auto;
+	z-index: 10;
+	text-align: center;
+}
+.toolbar {
+	position:relative;
+	display:block;
+	margin: 10px 0;
+	width:1000px;
+	height: 80px;
+	border: 1px solid #000;
+
+}
+
+.brushSizeBox {
+	position: relative;
+	top: 15px;
+	width: 250px;
+	float: left;
+	//background: #f0f0f0;
+	.brushSizeOutput {
+		margin-top: 5px;
+	}
+}
+
+.brushShapeBox {
+	position: relative;
+	top: 15px;
+	width: 250px;
+	float: left;
+	height: 50px;
+	ul {
+		display: block;
+		width: 100%;
+		li {
+			display: inline-block;
+			width: 50%;
+			float: left;
+			.brushShape {
+				display: block;
+				float: left;
+				width: 50px;
+				height: 50px;
+				background: #333;
+				&.circleBrush {
+					border-radius: 25px;
+				}
+				&:hover, &.on {
+					background: #999;
+				}
+			}
+			.brushTitle {
+				line-height: 50px;
+			}
+		}
+	}
+}
+
+.brushPointer {
+	position: absolute;
+	display:block;
+}
+
+.colorBox {
+	position: relative;
+	top: 15px;
+	width: 250px;
+	float: left;
+	height: 50px;
+	ul {
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		li {
+			position: relative;
+			display: inline-block;
+			width: 50px;
+			height: 50%;
+			border: 1px solid #555;
+			&:hover, &.on {
+				border: 3px solid #333;
+			}
+			&:hover {
+				opacity: 0.6;
+			}
+		}
+	}
+}
+
+.red { background: red; }
+.green { background: green; }
+.blue { background: blue; }
+.yellow { background: yellow; }
+.purple { background: purple; }
+.grey { background: #ccc; }
+.white { background: white; }
+.black { background: black; }
+
+.buttonBox {
+	position: relative;
+	top: 15px;
+	width: 200px;
+	float: right;
+	height: 50px;
+	button {
+		width: 40%;
+		height: 100%;
+	}
+}
+
+
+
